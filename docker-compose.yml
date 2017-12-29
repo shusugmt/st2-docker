@@ -20,10 +20,6 @@ services:
       - stackstorm-virtualenvs-volume:/opt/stackstorm/virtualenvs
       - stackstorm-configs-volume:/opt/stackstorm/configs
       - stackstorm-log-volume:/var/log
-      - ./packs.dev:/opt/stackstorm/packs.dev
-      - ./runtime/entrypoint.d:/st2-docker/entrypoint.d
-      - ./runtime/st2.d:/st2-docker/st2.d
-      - ./conf/stackstorm.env:/st2-docker/env
     dns_search: .
 
 ### External Services
@@ -90,6 +86,6 @@ volumes:
 
 networks:
   public:
-    driver: bridge
+    external: { name: public }
   private:
-    driver: bridge
+    external: { name: private }
