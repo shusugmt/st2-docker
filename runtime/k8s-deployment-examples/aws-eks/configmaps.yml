@@ -22,22 +22,3 @@ data:
   ST2_COORDINATION_BACKEND_URL: redis://:@redis:6379/
   ST2MISTRAL_RABBITMQ_URL: rabbit://admin:9jS+w1u07NbHtZke1m+jW4Cj@rabbitmq:5672/
   ST2MISTRAL_DB_URL: postgresql+psycopg2://mistral-user:2PehgWO824hcUCUMNbaVwDMT@postgres:5432/mistral
-
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: rabbitmq
-data:
-  RABBITMQ_DEFAULT_USER: admin
-  RABBITMQ_DEFAULT_PASS: 9jS+w1u07NbHtZke1m+jW4Cj
-
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: postgres
-data:
-  POSTGRES_USER: mistral-user
-  POSTGRES_PASSWORD: 2PehgWO824hcUCUMNbaVwDMT
-  POSTGRES_DB: mistral
