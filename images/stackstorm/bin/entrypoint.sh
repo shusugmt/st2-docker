@@ -20,20 +20,42 @@ MISTRAL_BASE_URL=${MISTRAL_BASE_URL:-http://127.0.0.1:8989/v2}
 crudini --set ${ST2_CONF} auth api_url ${ST2_API_URL}
 crudini --set ${ST2_CONF} mistral api_url ${ST2_API_URL}
 crudini --set ${ST2_CONF} mistral v2_base_url ${MISTRAL_BASE_URL}
-crudini --set ${ST2_CONF} messaging url \
-  amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
-crudini --set ${ST2_CONF} coordination url \
-  redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}
-crudini --set ${ST2_CONF} database host ${MONGO_HOST}
-crudini --set ${ST2_CONF} database port ${MONGO_PORT}
-if [ ! -z ${MONGO_DB} ]; then
-  crudini --set ${ST2_CONF} database db_name ${MONGO_DB}
+
+# Configure MQ backend URL
+# ST2_RABBITMQ_URL always takes precedence
+if [ ! -z ${ST2_RABBITMQ_URL} ]; then
+  crudini --del ${ST2_CONF} messaging url
+  crudini --set ${ST2_CONF} messaging cluster_urls "${ST2_RABBITMQ_URL}"
+else
+  crudini --set ${ST2_CONF} messaging url \
+    amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
 fi
-if [ ! -z ${MONGO_USER} ]; then
-  crudini --set ${ST2_CONF} database username ${MONGO_USER}
+
+# Configure coordination backend URL
+# ST2_COORDINATION_BACKEND_URL always takes precedence
+if [ ! -z ${ST2_COORDINATION_BACKEND_URL} ]; then
+  crudini --set ${ST2_CONF} coordination url "${ST2_COORDINATION_BACKEND_URL}"
+else
+  crudini --set ${ST2_CONF} coordination url \
+    redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}
 fi
-if [ ! -z ${MONGO_PASS} ]; then
-  crudini --set ${ST2_CONF} database password ${MONGO_PASS}
+
+# Configure mongodb URL
+# ST2_MONGODB_URL always takes precedence
+if [ ! -z ${ST2_MONGODB_URL} ]; then
+  crudini --set ${ST2_CONF} database host "${ST2_MONGODB_URL}"
+else
+  crudini --set ${ST2_CONF} database host ${MONGO_HOST}
+  crudini --set ${ST2_CONF} database port ${MONGO_PORT}
+  if [ ! -z ${MONGO_DB} ]; then
+    crudini --set ${ST2_CONF} database db_name ${MONGO_DB}
+  fi
+  if [ ! -z ${MONGO_USER} ]; then
+    crudini --set ${ST2_CONF} database username ${MONGO_USER}
+  fi
+  if [ ! -z ${MONGO_PASS} ]; then
+    crudini --set ${ST2_CONF} database password ${MONGO_PASS}
+  fi
 fi
 
 # NOTE: Only certain distros of MongoDB support SSL/TLS
@@ -49,10 +71,19 @@ fi
 
 MISTRAL_CONF=/etc/mistral/mistral.conf
 
-crudini --set ${MISTRAL_CONF} DEFAULT transport_url \
-  rabbit://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
-crudini --set ${MISTRAL_CONF} database connection \
-  postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+if [ ! -z ${ST2MISTRAL_RABBITMQ_URL} ]; then
+  crudini --set ${MISTRAL_CONF} DEFAULT transport_url "${ST2MISTRAL_RABBITMQ_URL}"
+else
+  crudini --set ${MISTRAL_CONF} DEFAULT transport_url \
+    rabbit://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@${RABBITMQ_HOST}:${RABBITMQ_PORT}
+fi
+
+if [ ! -z ${ST2MISTRAL_DB_URL} ]; then
+  crudini --set ${MISTRAL_CONF} database connection "${ST2MISTRAL_DB_URL}"
+else
+  crudini --set ${MISTRAL_CONF} database connection \
+    postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+fi
 
 # Run custom init scripts
 for f in /st2-docker/entrypoint.d/*; do
