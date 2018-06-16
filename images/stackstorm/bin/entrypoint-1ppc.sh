@@ -58,14 +58,14 @@ case "$ST2_SERVICE" in
     set -e
     /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head
     /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf populate
-    API_ARGS="--log-file /var/log/mistral/mistral-api.log -b 0.0.0.0:8989 -w 2 mistral.api.wsgi --graceful-timeout 10"
+    API_ARGS="-b 0.0.0.0:8989 -w 2 mistral.api.wsgi --graceful-timeout 10"
     exec /opt/stackstorm/mistral/bin/gunicorn $API_ARGS
     ;;
   "mistral-server" )
     set -e
     /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf upgrade head
     /opt/stackstorm/mistral/bin/mistral-db-manage --config-file /etc/mistral/mistral.conf populate
-    SERVER_ARGS="--config-file /etc/mistral/mistral.conf --log-file /var/log/mistral/mistral-server.log"
+    SERVER_ARGS="--config-file /etc/mistral/mistral.conf"
     exec /opt/stackstorm/mistral/bin/mistral-server --server engine,executor,notifier ${SERVER_ARGS}
     ;;
   "st2web" )
