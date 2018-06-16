@@ -17,8 +17,8 @@ apiVersion: v1
 metadata:
   name: st2-externals
 data:
-  ST2_MONGODB_URL: mongodb://mongo:27017/
-  ST2_RABBITMQ_URL: amqp://admin:9jS+w1u07NbHtZke1m+jW4Cj@rabbitmq:5672/
-  ST2_COORDINATION_BACKEND_URL: redis://:@redis:6379/
-  ST2MISTRAL_RABBITMQ_URL: rabbit://admin:9jS+w1u07NbHtZke1m+jW4Cj@rabbitmq:5672/
-  ST2MISTRAL_DB_URL: postgresql+psycopg2://mistral-user:2PehgWO824hcUCUMNbaVwDMT@postgres:5432/mistral
+  ST2_MONGODB_URL: mongodb://st2-mongodb-mongodb-replicaset-0.st2-mongodb-mongodb-replicaset:27017,st2-mongodb-mongodb-replicaset-1.st2-mongodb-mongodb-replicaset:27017,st2-mongodb-mongodb-replicaset-2.st2-mongodb-mongodb-replicaset:27017/st2?replicaSet=rs0
+  ST2_RABBITMQ_URL: amqp://st2:changeme@st2-rabbitmq-rabbitmq-ha:5672/
+  ST2_COORDINATION_BACKEND_URL: redis://:@your.redis.cache.amazonaws.com:6379/
+  ST2MISTRAL_RABBITMQ_URL: rabbit://st2:changeme@st2-rabbitmq-rabbitmq-ha:5672/
+  ST2MISTRAL_DB_URL: postgresql+psycopg2://st2:changeme@your.cluster.us-west-2.rds.amazonaws.com:5432/st2_mistral
