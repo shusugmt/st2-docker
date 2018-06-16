@@ -392,6 +392,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: st2-packs
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "aws-efs"
 spec:
   accessModes:
   - ReadWriteMany
@@ -404,6 +406,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: st2-virtualenvs
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "aws-efs"
 spec:
   accessModes:
   - ReadWriteMany
