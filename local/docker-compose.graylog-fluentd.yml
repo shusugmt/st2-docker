@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  fluentd:
+    image: fluent/fluentd:v1.2.4
+    environment:
+      - FLUENTD_CONF=fluent.rb
+      - FLUENTD_REMOTE_HOST=192.168.65.3
+      - FLUENTD_LOG_STDOUT=1
+    volumes:
+      - stackstorm-log-volume:/mnt/log
+      - ./local/fluentd/etc:/fluentd/etc:ro
+    networks:
+      - public

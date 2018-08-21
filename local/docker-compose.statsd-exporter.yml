@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  statsd-exporter:
+    image: prom/statsd-exporter:latest
+    ports:
+      - 9102:9102
+    networks:
+      - public
+      - private
+    volumes:
+      - ./local/statsd_mapping.conf:/statsd_mapping.conf
+    command:
+     - --statsd.mapping-config=/statsd_mapping.conf

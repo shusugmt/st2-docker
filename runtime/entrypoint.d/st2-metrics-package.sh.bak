@@ -1,0 +1,3 @@
+cd /tmp
+wget -nv https://8425-19051806-gh.circle-artifacts.com/0/packages/trusty/st2_2.9dev-43_amd64.deb
+dpkg -i st2_2.9dev-43_amd64.deb
