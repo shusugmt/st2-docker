@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  stackstorm:
+    restart: always
+    environment:
+      - ST2_ENABLE_SSHD=1
