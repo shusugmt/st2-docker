@@ -9,8 +9,6 @@ services:
       - conf/rabbitmq.env
       - conf/postgres.env
       - conf/redis.env
-    ports:
-      - "443:443"
     depends_on:
       - mongo
       - postgres
